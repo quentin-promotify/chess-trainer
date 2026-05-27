@@ -1,0 +1,197 @@
+.app-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Evaluation bar */
+.eval-bar {
+  width: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #444;
+  flex-shrink: 0;
+}
+
+.eval-black {
+  background: #1a1a1a;
+  transition: height 0.4s ease;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.eval-white {
+  background: #f0f0f0;
+  transition: height 0.4s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.eval-label {
+  font-size: 9px;
+  text-align: center;
+  display: block;
+  padding: 2px 0;
+  opacity: 0.8;
+  color: #888;
+  line-height: 1;
+}
+
+/* Board area */
+.board-area {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.game-over-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 20px 28px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.game-over-banner button {
+  background: #5a6aff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.game-over-banner button:hover {
+  background: #7a8aff;
+}
+
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 180px;
+  flex-shrink: 0;
+}
+
+/* Controls */
+.controls {
+  background: #16213e;
+  border: 1px solid #2a2a4a;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.controls button {
+  background: #5a6aff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.controls button:hover:not(:disabled) {
+  background: #7a8aff;
+}
+
+.controls button:disabled {
+  background: #333;
+  color: #666;
+  cursor: default;
+}
+
+.control-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.control-label select,
+.control-label input[type="range"] {
+  width: 100%;
+  accent-color: #5a6aff;
+}
+
+.control-label select {
+  background: #0f0f23;
+  color: #e0e0e0;
+  border: 1px solid #2a2a4a;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+
+.thinking-indicator {
+  font-size: 11px;
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Move history */
+.move-history {
+  background: #16213e;
+  border: 1px solid #2a2a4a;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.move-history-header {
+  font-weight: 600;
+  color: #aaa;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.move-pair {
+  display: grid;
+  grid-template-columns: 22px 1fr 1fr;
+  gap: 2px;
+  padding: 2px 0;
+  border-radius: 3px;
+}
+
+.move-pair:hover {
+  background: rgba(90, 106, 255, 0.1);
+}
+
+.move-number {
+  color: #666;
+  text-align: right;
+  padding-right: 4px;
+}
+
+.move {
+  padding: 0 4px;
+  font-family: ui-monospace, Consolas, monospace;
+}
