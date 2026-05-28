@@ -7,11 +7,16 @@ export default function Controls({
   isThinking,
   playerColor,
   onColorChange,
+  onUndo,
+  canUndo,
 }) {
   return (
     <div className="controls">
       <button onClick={onHint} disabled={isThinking}>
         Hint
+      </button>
+      <button onClick={onUndo} disabled={isThinking || !canUndo}>
+        ↩ Undo
       </button>
       <button onClick={onToggleEval}>
         {showEvalBar ? 'Hide Eval' : 'Show Eval'}

@@ -100,6 +100,21 @@ export default function App() {
     } catch { /* cancelled */ }
   }, [getBestMove, game]);
 
+  const handleUndo = useCallback(() => {
+    const gameCopy = new Chess();
+    const pgn = game.pgn();
+    if (pgn) gameCopy.loadPgn(pgn);
+
+    const movesToUndo = gameCopy.history().length >= 2 ? 2 : 1;
+    for (let i = 0; i < movesToUndo; i++) gameCopy.undo();
+
+    setGame(gameCopy);
+    setMoveHistory(gameCopy.history({ verbose: true }));
+    setHintMove(null);
+    setGameOver(null);
+    setEvaluation(0);
+  }, [game]);
+
   const resetGame = useCallback(() => {
     const newGame = new Chess();
     setGame(newGame);
@@ -157,6 +172,8 @@ export default function App() {
           isThinking={isThinking}
           playerColor={playerColor}
           onColorChange={handleColorChange}
+          onUndo={handleUndo}
+          canUndo={moveHistory.length > 0}
         />
         <MoveHistory history={moveHistory} />
       </div>
