@@ -4,73 +4,61 @@ import { Chessboard } from 'react-chessboard';
 
 export default function Board({ game, setGame, playerColor, hintMove, onPlayerMove, isThinking, boardWidth }) {
   const [selectedSquare, setSelectedSquare] = useState(null);
-  const [legalSquares, setLegalSquares] = useState([]);
+  const [legalMoveSquares, setLegalMoveSquares] = useState({});
 
-  function onDrop({ piece, sourceSquare, targetSquare }) {
-    if (isThinking) return false;
-
-    // Only allow the player to move their own pieces
-    const movingColor = piece?.pieceType?.[0] === 'w' ? 'white' : 'black';
-    if (movingColor !== playerColor) return false;
-
+  function makeMove(from, to) {
     const gameCopy = new Chess();
     const pgn = game.pgn();
     if (pgn) gameCopy.loadPgn(pgn);
-    const move = gameCopy.move({
-      from: sourceSquare,
-      to: targetSquare,
-      promotion: 'q',
-    });
+    const move = gameCopy.move({ from, to, promotion: 'q' });
     if (!move) return false;
-
     setGame(gameCopy);
     onPlayerMove(gameCopy.fen(), gameCopy);
-    setSelectedSquare(null);
-    setLegalSquares([]);
     return true;
   }
 
-  function onSquareClick(square) {
+  function onDrop({ piece, sourceSquare, targetSquare }) {
+    if (isThinking) return false;
+    const movingColor = piece?.pieceType?.[0] === 'w' ? 'white' : 'black';
+    if (movingColor !== playerColor) return false;
+    const result = makeMove(sourceSquare, targetSquare);
+    if (result) { setSelectedSquare(null); setLegalMoveSquares({}); }
+    return result;
+  }
+
+  function onSquareClick({ square }) {
     if (isThinking) return;
+    if (game.turn() !== playerColor[0]) return;
 
-    if (selectedSquare && legalSquares.includes(square)) {
-      const gameCopy = new Chess();
-      const pgn = game.pgn();
-      if (pgn) gameCopy.loadPgn(pgn);
+    const piece = game.get(square);
 
-      const move = gameCopy.move({ from: selectedSquare, to: square, promotion: 'q' });
-      if (move) {
-        setGame(gameCopy);
-        onPlayerMove(gameCopy.fen(), gameCopy);
-      }
-      setSelectedSquare(null);
-      setLegalSquares([]);
+    if (piece && piece.color === playerColor[0]) {
+      setSelectedSquare(square);
+      const moves = game.moves({ square, verbose: true });
+      const highlights = {};
+      moves.forEach((move) => {
+        highlights[move.to] = {
+          background: game.get(move.to)
+            ? 'radial-gradient(circle, rgba(255,0,0,0.4) 75%, transparent 75%)'
+            : 'radial-gradient(circle, rgba(0,0,0,0.2) 25%, transparent 25%)',
+          borderRadius: '50%',
+        };
+      });
+      highlights[square] = { background: 'rgba(255, 255, 0, 0.4)' };
+      setLegalMoveSquares(highlights);
       return;
     }
 
-    const piece = game.get(square);
-    const isPlayerPiece = piece && (
-      (playerColor === 'white' && piece.color === 'w') ||
-      (playerColor === 'black' && piece.color === 'b')
-    );
-
-    if (isPlayerPiece) {
-      const moves = game.moves({ square, verbose: true });
-      setSelectedSquare(square);
-      setLegalSquares(moves.map(m => m.to));
-    } else {
+    if (selectedSquare && legalMoveSquares[square]) {
       setSelectedSquare(null);
-      setLegalSquares([]);
+      setLegalMoveSquares({});
+      makeMove(selectedSquare, square);
+      return;
     }
-  }
 
-  const customSquareStyles = {};
-  if (selectedSquare) {
-    customSquareStyles[selectedSquare] = { backgroundColor: 'rgba(255, 255, 0, 0.5)' };
+    setSelectedSquare(null);
+    setLegalMoveSquares({});
   }
-  legalSquares.forEach(sq => {
-    customSquareStyles[sq] = { backgroundColor: 'rgba(0, 200, 100, 0.4)' };
-  });
 
   const arrows = hintMove
     ? [{ startSquare: hintMove.from, endSquare: hintMove.to, color: 'rgba(0,200,100,0.8)' }]
@@ -81,7 +69,7 @@ export default function Board({ game, setGame, playerColor, hintMove, onPlayerMo
       position: game.fen(),
       onPieceDrop: onDrop,
       onSquareClick,
-      customSquareStyles,
+      squareStyles: legalMoveSquares,
       boardOrientation: playerColor,
       arrows,
       animationDurationInMs: 200,

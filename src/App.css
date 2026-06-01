@@ -8,7 +8,6 @@
 .eval-bar {
   width: 20px;
   border-radius: 4px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   border: 1px solid #444;
@@ -31,15 +30,6 @@
   justify-content: center;
 }
 
-.eval-label {
-  font-size: 9px;
-  text-align: center;
-  display: block;
-  padding: 2px 0;
-  opacity: 0.8;
-  color: #888;
-  line-height: 1;
-}
 
 /* Board area */
 .board-area {

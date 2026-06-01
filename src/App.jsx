@@ -58,8 +58,7 @@ export default function App() {
         gameCopy.move({ from: bestMove.slice(0, 2), to: bestMove.slice(2, 4), promotion: 'q' });
         setGame(gameCopy);
         setMoveHistory(gameCopy.history({ verbose: true }));
-        const flipped = playerColorRef.current === 'white' ? 1 : -1;
-        setEvaluation((ev ?? 0) * flipped);
+        setEvaluation(currentGame.turn() === 'b' ? -(ev ?? 0) : (ev ?? 0));
         checkGameOver(gameCopy);
       }
     } finally {
@@ -77,8 +76,7 @@ export default function App() {
     }
     try {
       const { evaluation: ev } = await getBestMove(fen, 10);
-      const flipped = playerColorRef.current === 'white' ? 1 : -1;
-      setEvaluation((ev ?? 0) * flipped);
+      setEvaluation(gameCopy.turn() === 'b' ? -(ev ?? 0) : (ev ?? 0));
     } catch { /* cancelled if makeBotMove starts first */ }
     makeBotMove(gameCopy); // makeBotMove manages isThinking(true/false) internally
   }, [getBestMove, makeBotMove, checkGameOver]);
